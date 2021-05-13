@@ -120,7 +120,7 @@ y, x = (np.unravel_index(out.argmax(), out.shape))
 
 # Display image
 plt.imshow(img)
-plt.title('Result (red marker on the detected location')
+plt.title('Result with normalization (red marker on the detected location)')
 plt.axis('off')
 
 # Draw marker at detected location

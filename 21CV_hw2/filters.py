@@ -181,7 +181,17 @@ def normalized_cross_correlation(f, g):
 
     out = None
     ### YOUR CODE HERE
-    pass
+    Hi, Wi = f.shape
+    Hk, Wk = g.shape
+    out = np.zeros((Hi, Wi))
+    norm_t = (g-np.mean(g)) / np.std(g)
+    m = int(Hk/2)
+    n = int(Wk/2)
+    for i in range(m, Hi-m):
+        for j in range(n, Wi-n):
+            subimg = f[i-m:i+m, j-n:j+n+1]
+            norm_subimage = (subimg-np.mean(subimg))/np.std(subimg)
+            out[i][j] = np.sum(norm_t * norm_subimage)
     ### END YOUR CODE
 
     return out
