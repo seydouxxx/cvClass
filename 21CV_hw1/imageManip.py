@@ -1,9 +1,27 @@
 import math
+from matplotlib import image
 
 import numpy as np
+import matplotlib.pyplot as plt
 from PIL import Image
 from skimage import color, io
 
+image1_path = './image1.jpg'
+image2_path = './image2.jpg'
+
+def display(img, cmap='default'):
+    # Show image
+    plt.figure(figsize = (5, 5))
+    if (cmap=='H'):
+        plt.imshow(img, cmap='hsv')
+    elif (cmap=='S'):
+        plt.imshow(img, 'Greys')
+    elif (cmap=='V'):
+        plt.imshow(img, cmap='gray')
+    else:
+        plt.imshow(img)
+    plt.axis('off')
+    plt.show()
 
 def load(image_path):
     """Loads an image from a file path.
@@ -18,9 +36,9 @@ def load(image_path):
     """
     out = None
 
-    ### YOUR CODE HERE
+    ### MY CODE HERE
     # Use skimage io.imread
-    pass
+    out = io.imread(image_path)
     ### END YOUR CODE
 
     # Let's convert the image to be between the correct range.
@@ -44,8 +62,9 @@ def dim_image(image):
 
     out = None
 
-    ### YOUR CODE HERE
-    pass
+    ### MY CODE HERE
+    reshaped = image.reshape((image.shape[0] * image.shape[1], 3))
+    out = np.array([0.5 * pow(p, 2) for p in reshaped]).reshape((300, 300, 3))
     ### END YOUR CODE
 
     return out
@@ -66,7 +85,7 @@ def convert_to_grey_scale(image):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    out = color.rgb2gray(image)
     ### END YOUR CODE
 
     return out
@@ -128,7 +147,14 @@ def hsv_decomposition(image, channel='H'):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    print(channel)
+    if (channel == 'H'):
+        out = hsv[...,0]
+    elif (channel == 'S'):
+        out = hsv[...,1]
+    elif (channel == 'V'):
+        out = hsv[...,2]
+    print(out)
     ### END YOUR CODE
 
     return out
@@ -154,7 +180,21 @@ def mix_images(image1, image2, channel1, channel2):
 
     out = None
     ### YOUR CODE HERE
-    pass
+    if (channel1=='R'): image1[:, :, 0] = 0
+    elif (channel1=='G'): image1[:, :, 1] = 0
+    elif (channel1=='B'): image1[:, :, 2] = 0
+    
+    if (channel2=='R'): image2[:, :, 0] = 0
+    elif (channel2=='G'): image2[:, :, 1] = 0
+    elif (channel2=='B'): image2[:, :, 2] = 0
+
+    image1[:, 150:, :] = 0
+    image2[:, :150, :] = 0
+    img1 = image1[:, :, :] + image2[:, :, :]
+    out = img1
+    # img2 = image2[:, 150:, :]
+    # out = img1 + img2
+    # print(image1)
     ### END YOUR CODE
 
     return out
@@ -187,3 +227,32 @@ def mix_quadrants(image):
     ### END YOUR CODE
 
     return out
+
+image1 = load(image1_path)
+image2 = load(image2_path)
+display(image1)
+# display(image2)
+
+# new_image = dim_image(image1)
+# display(new_image)
+
+# grey_image = convert_to_grey_scale(image1)
+# display(grey_image)
+
+# image_h = hsv_decomposition(image1, 'H')
+# image_s = hsv_decomposition(image1, 'S')
+# image_v = hsv_decomposition(image1, 'V')
+
+# print("Below is the image with only the H channel.")
+# display(image_h, 'H')
+
+# print("Below is the image with only the S channel.")
+# display(image_s, 'S')
+
+# print("Below is the image with only the V channel.")
+# display(image_v, 'V')
+
+image_mixed = mix_images(image1, image2, channel1='R', channel2='G')
+display(image_mixed)
+
+print(f'{np.sum(image_mixed):.2f}')
